@@ -1,7 +1,6 @@
-#ifndef _LODS_H_
-#define _LODS_H_
+#ifndef __LODS_H__
+#define __LODS_H__
 
-make_helper(lods_n_b);
-make_helper(lods_n_v);
-
+make_helper(lods_b);
+make_helper(lods_v);
 #endif

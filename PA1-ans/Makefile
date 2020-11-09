@@ -10,7 +10,7 @@ LIB_COMMON_DIR := lib-common
 LIBC_INC_DIR := $(LIB_COMMON_DIR)/uclibc/include
 LIBC_LIB_DIR := $(LIB_COMMON_DIR)/uclibc/lib
 LIBC := $(LIBC_LIB_DIR)/libc.a
-#FLOAT := obj/$(LIB_COMMON_DIR)/FLOAT/FLOAT.a
+FLOAT := obj/$(LIB_COMMON_DIR)/FLOAT/FLOAT.a
 
 include config/Makefile.git
 include config/Makefile.build
@@ -53,8 +53,9 @@ clean: clean-cpp
 
 ##### some convinient rules #####
 
-USERPROG := obj/testcase/hello-str
-ENTRY := $(USERPROG)
+USERPROG := obj/testcase/print-FLOAT
+# ENTRY := $(USERPROG)
+ENTRY := $(kernel_BIN)
 
 entry: $(ENTRY)
 	objcopy -S -O binary $(ENTRY) entry
@@ -73,17 +74,3 @@ test: $(nemu_BIN) $(testcase_BIN) entry
 
 submit: clean
 	cd .. && zip -r $(STU_ID).zip $(shell pwd | grep -o '[^/]*$$')
-
-##### rules for counting lines of .c/.h in nemu #####
-#COUNT_NEMU_Lines:=$(shell cd nemu && find . -name "*[.h|.c]" | xargs grep -Ev "^$$" | wc -l)
-#COUNT_NEMU_Lines_ADD:=$(shell expr $(COUNT_NEMU_Lines) - 2973)
-#COUNT_NEMU_ALLLines:=$(shell cd nemu && find . -name "*[.h|.c]" | xargs cat | wc -l)
-#COUNT_NEMU_ALLLines_ADD:=$(shell expr $(COUNT_NEMU_ALLLines) - 3736)
-
-#count:
-#	@echo There are $(COUNT_NEMU_Lines) lines of code in nemu of this branch except empty lines
-#	@echo There are $(COUNT_NEMU_Lines_ADD) lines added into the frame code
-
-#countall:
-#	@echo There are $(COUNT_NEMU_ALLLines) lines of code in nemu of this branch
-#	@echo There are $(COUNT_NEMU_ALLLines_ADD) lines added into the frame code

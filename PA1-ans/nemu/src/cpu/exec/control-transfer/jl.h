@@ -1,7 +1,0 @@
-#ifndef _JL_H__
-#define _JL_H__
-
-make_helper(jl_i_b);
-make_helper(jl_i_v);
-
-#endif
