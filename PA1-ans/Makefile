@@ -1,15 +1,16 @@
 ##### global settings #####
 
-.PHONY: nemu entry all_testcase kernel run gdb test submit clean
+.PHONY: nemu entry testcase kernel run gdb test submit clean
 
 CC := gcc
 LD := ld
 CFLAGS := -MMD -Wall -Werror -c
 
 LIB_COMMON_DIR := lib-common
-NEWLIBC_DIR := $(LIB_COMMON_DIR)/newlib
-NEWLIBC := $(NEWLIBC_DIR)/libc.a
-FLOAT := obj/$(LIB_COMMON_DIR)/FLOAT.a
+LIBC_INC_DIR := $(LIB_COMMON_DIR)/uclibc/include
+LIBC_LIB_DIR := $(LIB_COMMON_DIR)/uclibc/lib
+LIBC := $(LIBC_LIB_DIR)/libc.a
+#FLOAT := obj/$(LIB_COMMON_DIR)/FLOAT/FLOAT.a
 
 include config/Makefile.git
 include config/Makefile.build
@@ -21,12 +22,12 @@ all: nemu
 
 include nemu/Makefile.part
 include testcase/Makefile.part
-include lib-common/Makefile.part
+include lib-common/FLOAT/Makefile.part
 include kernel/Makefile.part
 include game/Makefile.part
 
 nemu: $(nemu_BIN)
-all_testcase: $(testcase_BIN)
+testcase: $(testcase_BIN)
 kernel: $(kernel_BIN)
 game: $(game_BIN)
 
@@ -52,9 +53,8 @@ clean: clean-cpp
 
 ##### some convinient rules #####
 
-USERPROG := obj/testcase/matrix-mul
-ENTRY :=$(kernel_BIN)
-
+USERPROG := obj/testcase/hello-str
+ENTRY := $(USERPROG)
 
 entry: $(ENTRY)
 	objcopy -S -O binary $(ENTRY) entry
@@ -64,10 +64,26 @@ run: $(nemu_BIN) $(USERPROG) entry
 	$(nemu_BIN) $(USERPROG)
 
 gdb: $(nemu_BIN) $(USERPROG) entry
+	$(call git_commit, "gdb")
 	gdb -s $(nemu_BIN) --args $(nemu_BIN) $(USERPROG)
 
 test: $(nemu_BIN) $(testcase_BIN) entry
+	$(call git_commit, "test")
 	bash test.sh $(testcase_BIN)
 
 submit: clean
-	cd .. && tar cvj $(shell pwd | grep -o '[^/]*$$') > $(STU_ID).tar.bz2
+	cd .. && zip -r $(STU_ID).zip $(shell pwd | grep -o '[^/]*$$')
+
+##### rules for counting lines of .c/.h in nemu #####
+#COUNT_NEMU_Lines:=$(shell cd nemu && find . -name "*[.h|.c]" | xargs grep -Ev "^$$" | wc -l)
+#COUNT_NEMU_Lines_ADD:=$(shell expr $(COUNT_NEMU_Lines) - 2973)
+#COUNT_NEMU_ALLLines:=$(shell cd nemu && find . -name "*[.h|.c]" | xargs cat | wc -l)
+#COUNT_NEMU_ALLLines_ADD:=$(shell expr $(COUNT_NEMU_ALLLines) - 3736)
+
+#count:
+#	@echo There are $(COUNT_NEMU_Lines) lines of code in nemu of this branch except empty lines
+#	@echo There are $(COUNT_NEMU_Lines_ADD) lines added into the frame code
+
+#countall:
+#	@echo There are $(COUNT_NEMU_ALLLines) lines of code in nemu of this branch
+#	@echo There are $(COUNT_NEMU_ALLLines_ADD) lines added into the frame code

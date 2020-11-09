@@ -1,108 +1,146 @@
 #include "monitor/watchpoint.h"
 #include "monitor/expr.h"
-#include "nemu.h"
-#define NR_WP 33
 
-static WP wp_list[NR_WP];
+#define NR_WP 32
+
+static WP wp_pool[NR_WP];
 static WP *head, *free_;
 
-void init_wp_list() {
+void init_wp_pool() {
 	int i;
-	for(i = 1; i < NR_WP; i ++) {
-		wp_list[i].NO = i;
-		wp_list[i].next = &wp_list[i + 1];
+	for(i = 0; i < NR_WP; i ++) {
+		wp_pool[i].NO = i;
+		wp_pool[i].next = &wp_pool[i + 1];
 	}
-	wp_list[NR_WP - 1].next = NULL;
+	wp_pool[NR_WP - 1].next = NULL;
 
 	head = NULL;
-	free_ = &wp_list[1];
+	free_ = wp_pool;
 }
 
 /* TODO: Implement the functionality of watchpoint */
 WP* new_wp()
 {
-	WP *f,*p;
-	f = free_;
-	free_ = free_->next;
-	f->next = NULL;
-	p = head;
-	if (p == NULL){head = f;p = head;}
-	else {
-		while (p->next!=NULL)p=p->next;
-		p->next = f;
-		}
-	return f;
-}
-void free_wp (WP *wp)
-{
-	WP *f,*p;
+	WP *p, *q;
+	if(free_ == NULL) {
+		printf("No watchpoint avalible\n");
+		assert(0);
+	}
+
+	/*Delete a node from free*/
 	p = free_;
-	if (p == NULL){free_ = wp;p = free_;}
+	free_ = free_->next;
+
+	/*Add a node to tail*/
+	q = head;
+	if(q == NULL) {
+		head = p;
+		p->next = NULL;
+	}
 	else {
-		while (p->next!=NULL)p=p->next;
-		p->next = wp;
+		while(q->next != NULL) {
+			q = q->next;
+		}
+		q->next = p;
+		p->next = NULL;
 	}
-	f = head;
-	//printf ("%d %d %d\n",f->NO,f->next->NO,wp->NO);
-	if (head == NULL)assert (0);
-	if (head->NO == wp->NO)
-	{
-		head = head->next;
-	}
-	else 
-	{
-	while (f->next != NULL && f->next->NO != wp->NO)f = f->next;
-	if (f->next == NULL && f->NO == wp->NO)printf ("what ghost!");
-	else if (f->next->NO == wp->NO)f->next = f->next->next;
-	else assert (0);
-	//if (head == NULL)printf ("*NULL\n");
-	}
-	wp->next = NULL;
-	wp->val = 0;
-	wp->b = 0;
-	wp->expr[0] = '\0';
+
+	return p;
 }
+
+void free_wp(WP *wp)
+{
+	WP *p;
+	p = head;
+	if(p == NULL) {
+		printf("No watchpoints\n");
+		assert(0);
+	}
+	/*Delete a node*/
+	else if(p->NO == wp->NO) {
+		head = p->next;
+	}
+	else {
+		while(p->next != NULL && p->next->NO != wp->NO) {
+			p = p->next;
+		}
+		if(p->next->NO == wp->NO)
+			p->next = p->next->next;
+		else
+			assert(0);
+	}
+	/*Add a node*/
+	if(free_ == NULL) {
+		free_ = wp;
+		free_->next = NULL;
+	}
+	else {
+		p = free_;
+		while(p->next != NULL) {
+                        p = p->next;
+                }
+                p->next = wp;
+                wp->next = NULL;
+	}
+	/*Delete the some data in this node*/
+	int i;
+	for(i = 0; i < 32; i++)
+		free_->str[i] = '\0';
+}
+
 bool check_wp()
 {
-	WP *f;
-	f = head;
-	bool key = true;
-	bool suc;
-	while (f != NULL)
-	{
-		uint32_t tmp_expr = expr (f->expr,&suc);
-		if (!suc)assert (1);
-		if (tmp_expr != f->val)
-		{
-			key = false;
-			if (f->b)
-			{
-				printf ("Hit breakpoint %d at 0x%08x\n",f->b,cpu.eip);
-				f = f->next;
-				continue;
-			}
-			printf ("Watchpoint %d: %s\n",f->NO,f->expr);
-			printf ("Old value = %d\n",f->val);
-			printf ("New value = %d\n",tmp_expr);
-			f->val = tmp_expr;
+	WP *p;
+	uint32_t new_value;
+	bool success = true, flag = true;
+	p = head;
+	while(p != NULL) {
+		new_value = expr(p->str, &success);
+		if(!success)
+			assert(0);
+		if(new_value != p->value) {
+			flag = false;
+			printf("watchpoint %d: %s changed\n", p->NO, p->str);
+			printf("Old value: %u\nNew value: %u\n", p->value, new_value);
+			p->value = new_value;
 		}
-		f = f->next;
+		p = p->next;
 	}
-	return key;
+	return flag;
 }
-void delete_wp(int num)
-{
-	WP *f;
-	f = &wp_list[num];
-	free_wp (f);
-}
+
 void info_wp()
 {
-	WP *f;
-	f=head;
-	while (f!=NULL)
-	{
-		printf ("Watchpoint %d: %s = %d\n",f->NO,f->expr,f->val);
-		f = f->next;
+	WP *p;
+	bool success = true;
+	p = head;
+	if(p == NULL) {
+		printf("NO watchpoint\n");
+	}
+	else {
+		printf("Number\tType\t\tWhat\t\tValue\n");
+		while(p != NULL) {
+			if(success)
+				printf("   %d\tWatchpoint\t%s\t\t%-u\n", p->NO, p->str, p->value);
+			p = p->next;
+		}
+	}
+}
+
+void delete_wp(int n)
+{
+	WP *p = head;
+	if(p == NULL)
+		printf("No watchpoint\n");
+	else {
+		while(p != NULL && p->NO != n) {
+			p = p->next;
+		}
+		if(p == NULL) {
+			printf("Watchpoint %u doesn't exist\n", n);
+		}
+		else if(p->NO == n) {
+			free_wp(p);
+		}
 	}
 }

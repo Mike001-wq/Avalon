@@ -6,5 +6,6 @@
 !test.sh
 !.gitignore
 !README.md
-!lib-common/newlib/libc.a
+!lib-common/uclibc/lib/*
 !kernel/src/memory/mm_malloc.o
+!testcase/user.ld

@@ -15,7 +15,8 @@ int main() {
 		nemu_assert(f[i] == ans[i]);
 	}
 
-	HIT_GOOD_TRAP;
+	nemu_assert(i == 13);
+
 	return 0;
 }
 

@@ -5,19 +5,32 @@
 static PDE updir[NR_PDE] align_to_page;
 static CR3 ucr3;
 
-inline PDE* get_updir() { return updir; }
-inline uint32_t get_ucr3() { return ucr3.val; }
+PDE* get_updir() { return updir; }
+uint32_t get_ucr3() { return ucr3.val; }
 
-inline PDE* get_kpdir();
+PDE* get_kpdir();
 
-uint32_t brk = 0;
+uint32_t cur_brk = 0;
+// we do not free memory, so use `max_brk' to determine whether to call mm_malloc()
+uint32_t max_brk = 0;
 
 /* The brk() system call handler. */
-void mm_brk(uint32_t new_brk) {
-	if(new_brk > brk) {
-		mm_malloc(brk, new_brk - brk);
+uint32_t mm_brk(uint32_t new_brk) {
+	if(new_brk != 0) {
+		if(new_brk > max_brk) {
+#ifdef IA32_PAGE
+			mm_malloc(max_brk, new_brk - max_brk);
+#endif
+			max_brk = new_brk;
+		}
+
+		cur_brk = new_brk;
 	}
-	brk = new_brk;
+
+	// If new_brk == 0, the brk() syscall should fail and return
+	// the current break. See the NOTE of `man 2 brk' for details.
+
+	return cur_brk;
 }
 
 void init_mm() {

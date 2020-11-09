@@ -10,10 +10,19 @@ static void do_execute () {
 	dest >>= count;
 	OPERAND_W(op_dest, dest);
 
-	/* There is no need to update EFLAGS, since no other instructions 
-	 * in PA will test the flags updated by this instruction.
-	 */
-
+	/* TODO: Update EFLAGS. */
+	//panic("please implement me");
+	DATA_TYPE result = dest;
+	//cpu.CF = MSB(src << ((DATA_BYTE << 3) - 1));
+	cpu.CF = 0;
+	cpu.OF = 0;
+    cpu.ZF = !result;
+    cpu.SF = MSB(result);//get sign flag
+    /*judge whether number of 1 in low 8 bits is even*/
+    result ^= result >> 4;
+    result ^= result >> 2;
+    result ^= result >> 1;
+    cpu.PF = !(result & 1);
 	print_asm_template2();
 }
 

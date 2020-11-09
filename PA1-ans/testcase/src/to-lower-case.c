@@ -14,7 +14,7 @@ int main() {
 		nemu_assert(to_lower_case(i) == ans[i]);
 	}
 
-	HIT_GOOD_TRAP;
+	nemu_assert(i == 128);
 
 	return 0;
 }

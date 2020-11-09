@@ -14,7 +14,7 @@ dma_prepare(void *buf) {
 	 * 1. Prepare a Physical Region Descriptor Table(PRDT)
 	 *		with single entry.
 	 * 2. Fill the PRD entry as following
-	 *		address: the address of ``buf''
+	 *		address: the address of `buf'
 	 *		byte_cnt: 512
 	 *		eot: 1
 	 * 3. Load the address of PRDT to the Descriptor Table

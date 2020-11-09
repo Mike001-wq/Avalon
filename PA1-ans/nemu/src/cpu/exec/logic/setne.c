@@ -4,5 +4,4 @@
 #include "setne-template.h"
 #undef DATA_BYTE
 
-/* for instruction encoding overloading */
 

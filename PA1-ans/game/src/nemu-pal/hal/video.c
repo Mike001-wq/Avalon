@@ -7,17 +7,26 @@
 
 int get_fps();
 
-void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *scrrect, 
+void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, 
 		SDL_Surface *dst, SDL_Rect *dstrect) {
 	assert(dst && src);
 
-	/* TODO: Performs a fast blit from the source surface to the 
-	 * destination surface. Only the position is used in the
-	 * ``dstrect'' (the width and height are ignored). If either
-	 * ``srcrect'' or ``dstrect'' are NULL, the entire surface 
-	 * (``src'' or ``dst'') is copied. The final blit rectangle 
-	 * is saved in ``dstrect'' after all clipping is performed
-	 * (``srcrect'' is not modified).
+	int sx = (srcrect == NULL ? 0 : srcrect->x);
+	int sy = (srcrect == NULL ? 0 : srcrect->y);
+	int dx = (dstrect == NULL ? 0 : dstrect->x);
+	int dy = (dstrect == NULL ? 0 : dstrect->y);
+	int w = (srcrect == NULL ? src->w : srcrect->w);
+	int h = (srcrect == NULL ? src->h : srcrect->h);
+	if(dst->w - dx < w) { w = dst->w - dx; }
+	if(dst->h - dy < h) { h = dst->h - dy; }
+	if(dstrect != NULL) {
+		dstrect->w = w;
+		dstrect->h = h;
+	}
+
+	/* TODO: copy pixels from position (`sx', `sy') with size
+	 * `w' X `h' of `src' surface to position (`dx', `dy') of
+	 * `dst' surface.
 	 */
 
 	assert(0);
@@ -27,29 +36,10 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	assert(dst);
 	assert(color <= 0xff);
 
-	/* TODO: Fill the rectangle area described by ``dstrect''
-	 * in surface ``dst'' with color ``color''. If dstrect is
+	/* TODO: Fill the rectangle area described by `dstrect'
+	 * in surface `dst' with color `color'. If dstrect is
 	 * NULL, fill the whole surface.
 	 */
-
-	assert(0);
-}
-
-void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
-	assert(screen);
-	assert(screen->pitch == 320);
-	if(screen->flags & SDL_HWSURFACE) {
-		if(x == 0 && y == 0) {
-			/* Draw FPS */
-			vmem = VMEM_ADDR;
-			char buf[80];
-			sprintf(buf, "%dFPS", get_fps());
-			draw_string(buf, 0, 0, 10);
-		}
-		return;
-	}
-
-	/* TODO: Copy the pixels in the rectangle area to the screen. */
 
 	assert(0);
 }
@@ -86,13 +76,29 @@ void SDL_SetPalette(SDL_Surface *s, int flags, SDL_Color *colors,
 
 /* ======== The following functions are already implemented. ======== */
 
-void SDL_SoftStretch(SDL_Surface *src, SDL_Rect *scrrect, 
+void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
+	assert(screen);
+	assert(screen->pitch == 320);
+
+	// this should always be true in NEMU-PAL
+	assert(screen->flags & SDL_HWSURFACE);
+
+	if(x == 0 && y == 0) {
+		/* Draw FPS */
+		vmem = VMEM_ADDR;
+		char buf[80];
+		sprintf(buf, "%dFPS", get_fps());
+		draw_string(buf, 0, 0, 10);
+	}
+}
+
+void SDL_SoftStretch(SDL_Surface *src, SDL_Rect *srcrect, 
 		SDL_Surface *dst, SDL_Rect *dstrect) {
 	assert(src && dst);
-	int x = (scrrect == NULL ? 0 : scrrect->x);
-	int y = (scrrect == NULL ? 0 : scrrect->y);
-	int w = (scrrect == NULL ? src->w : scrrect->w);
-	int h = (scrrect == NULL ? src->h : scrrect->h);
+	int x = (srcrect == NULL ? 0 : srcrect->x);
+	int y = (srcrect == NULL ? 0 : srcrect->y);
+	int w = (srcrect == NULL ? src->w : srcrect->w);
+	int h = (srcrect == NULL ? src->h : srcrect->h);
 
 	assert(dstrect);
 	if(w == dstrect->w && h == dstrect->h) {
@@ -152,7 +158,7 @@ void SDL_FreeSurface(SDL_Surface *s) {
 			free(s->format);
 		}
 		
-		if(s->pixels != NULL) {
+		if(s->pixels != NULL && s->pixels != VMEM_ADDR) {
 			free(s->pixels);
 		}
 

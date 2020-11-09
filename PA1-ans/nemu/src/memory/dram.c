@@ -45,14 +45,13 @@ RB rowbufs[NR_RANK][NR_BANK];
 void init_ddr3() {
 	int i, j;
 	for(i = 0; i < NR_RANK; i ++) {
-
 		for(j = 0; j < NR_BANK; j ++) {
 			rowbufs[i][j].valid = false;
 		}
 	}
 }
 
-void ddr3_read(hwaddr_t addr, void *data) {
+static void ddr3_read(hwaddr_t addr, void *data) {
 	Assert(addr < HW_MEM_SIZE, "physical address %x is outside of the physical memory!", addr);
 
 	dram_addr temp;
@@ -73,7 +72,7 @@ void ddr3_read(hwaddr_t addr, void *data) {
 	memcpy(data, rowbufs[rank][bank].buf + col, BURST_LEN);
 }
 
-void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask) {
+static void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask) {
 	Assert(addr < HW_MEM_SIZE, "physical address %x is outside of the physical memory!", addr);
 
 	dram_addr temp;
@@ -102,12 +101,12 @@ uint32_t dram_read(hwaddr_t addr, size_t len) {
 	uint8_t temp[2 * BURST_LEN];
 	
 	ddr3_read(addr, temp);
-//BURST_LEN 8
-//BURST_MASK (BURST_LEN - 1)
+
 	if(offset + len > BURST_LEN) {
 		/* data cross the burst boundary */
 		ddr3_read(addr + BURST_LEN, temp + BURST_LEN);
 	}
+
 	return unalign_rw(temp + offset, 4);
 }
 

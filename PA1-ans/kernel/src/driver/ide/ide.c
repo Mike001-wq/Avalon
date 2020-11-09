@@ -11,7 +11,7 @@ void write_byte(uint32_t, uint8_t);
 void add_irq_handle(int, void (*)(void));
 
 /* The kernel is monolithic, therefore we do not need to
- * translate the address ``buf'' from the user process to
+ * translate the address `buf' from the user process to
  * a physical one, which is necessary for a microkernel.
  */
 void ide_read(uint8_t *buf, uint32_t offset, uint32_t len) {

@@ -6,7 +6,7 @@
 
 #define make_helper_v(name) \
 	make_helper(concat(name, _v)) { \
-		return (ops_decoded.is_data_size_16 ? concat(name, _w) : concat(name, _l)) (eip); \
+		return (ops_decoded.is_operand_size_16 ? concat(name, _w) : concat(name, _l)) (eip); \
 	}
 
 #define do_execute concat4(do_, instr, _, SUFFIX)
@@ -31,14 +31,5 @@ extern char assembly[];
 
 #define print_asm_template3() \
 	print_asm(str(instr) str(SUFFIX) " %s,%s,%s", op_src->str, op_src2->str, op_dest->str)
-
-#define print_asm_no_template1() \
-	print_asm(str(instr)" %s", op_src->str)
-
-#define print_asm_no_template2() \
-	print_asm(str(instr)" %s,%s", op_src->str, op_dest->str)
-
-#define print_asm_no_template3() \
-	print_asm(str(instr) " %s,%s,%s", op_src->str, op_src2->str, op_dest->str)
 
 #endif

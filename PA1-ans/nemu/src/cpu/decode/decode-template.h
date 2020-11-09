@@ -5,51 +5,37 @@
 #define decode_r_internal concat3(decode_r_, SUFFIX, _internal)
 #define decode_rm_internal concat3(decode_rm_, SUFFIX, _internal)
 #define decode_i concat(decode_i_, SUFFIX)
-#define decode_n concat(decode_n_, SUFFIX)
 #define decode_a concat(decode_a_, SUFFIX)
 #define decode_r2rm concat(decode_r2rm_, SUFFIX)
 
-make_helper(concat(decode_n_, SUFFIX)) {
-	op_src->type = OP_TYPE_NO;
-	return 0;
-}
 /* Ib, Iv */
 make_helper(concat(decode_i_, SUFFIX)) {
 	/* eip here is pointing to the immediate */
 	op_src->type = OP_TYPE_IMM;
 	op_src->imm = instr_fetch(eip, DATA_BYTE);
 	op_src->val = op_src->imm;
+
 #ifdef DEBUG
 	snprintf(op_src->str, OP_STR_SIZE, "$0x%x", op_src->imm);
 #endif
 	return DATA_BYTE;
 }
-make_helper(concat(decode_ii_, SUFFIX)) {
-	/* eip here is pointing to the immediate */
-	op_src->type = OP_TYPE_IMM;
-	op_src->imm = instr_fetch(eip, 4);
-	op_src->val = op_src->imm;
-	op_dest->type = OP_TYPE_IMM;
-	op_dest ->imm = instr_fetch(eip + 4, 2);
-	op_dest->val = op_dest->imm;
-#ifdef DEBUG
-	snprintf(op_src->str, OP_STR_SIZE, "$0x%x,$0x%x", op_dest->imm,op_src->imm);
-#endif
-	return 6;
-}
+
 #if DATA_BYTE == 1 || DATA_BYTE == 4
 /* sign immediate */
 make_helper(concat(decode_si_, SUFFIX)) {
 	op_src->type = OP_TYPE_IMM;
-	op_src->simm = (DATA_TYPE_S)instr_fetch(eip, DATA_BYTE);
-	op_src->val = op_src->simm;
-	/* TODO: Use instr_fetch() to read ``DATA_BYTE'' bytes of memory pointed 
-	 * by ``eip''. Interpret the result as an signed immediate, and assign
+
+	/* TODO: Use instr_fetch() to read `DATA_BYTE' bytes of memory pointed
+	 * by `eip'. Interpret the result as an signed immediate, and assign
 	 * it to op_src->simm.
 	 *
 	op_src->simm = ???
 	 */
 	//panic("please implement me");
+	op_src->simm = (DATA_TYPE_S)instr_fetch(eip, DATA_BYTE);
+
+	op_src->val = op_src->simm;
 
 #ifdef DEBUG
 	snprintf(op_src->str, OP_STR_SIZE, "$0x%x", op_src->val);
@@ -73,9 +59,6 @@ static int concat(decode_a_, SUFFIX) (swaddr_t eip, Operand *op) {
 /* eXX: eAX, eCX, eDX, eBX, eSP, eBP, eSI, eDI */
 static int concat3(decode_r_, SUFFIX, _internal) (swaddr_t eip, Operand *op) {
 	op->type = OP_TYPE_REG;
-	//change this one
-	op->size = DATA_BYTE;
-	//
 	op->reg = ops_decoded.opcode & 0x7;
 	op->val = REG(op->reg);
 
@@ -106,7 +89,6 @@ make_helper(concat(decode_r2rm_, SUFFIX)) {
 /* Gb <- Eb
  * Gv <- Ev
  */
- //change from return decode_rm_internal(eip, op_src, op_dest);
 make_helper(concat(decode_rm2r_, SUFFIX)) {
 	return decode_rm_internal(eip, op_src, op_dest);
 }

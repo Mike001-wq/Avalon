@@ -1,13 +1,13 @@
-# ICS2015 Programming Assignment
+# NEMU2020 Programming Assignment
 
-This project is the programming assignment of the class ICS(Introduction to Computer System) in Department of Computer Science and Technology, NanJing University.
+This project is the programming assignment of the class ICS(Introduction to Computer System) in College of Intelligence and Computing, Tianjin Univerisity.
 
-For the guide of this programming assignment, refer to http://nju-ics.gitbooks.io/ics2015-programming-assignment/content/
+This project is introduced from Nanjin University in 2016. Thank you for  Prof. Chunfeng Yuan of NJU and Dr. Zihao Yu of ICT.
 
 The following subprojects/components are included. Some of them are not fully implemented.
 * NEMU
 * testcase
-* newlib
+* uClibc
 * kernel
 * typing game
 * NEMU-PAL
@@ -40,9 +40,9 @@ NEMU(NJU Emulator) is a simple but complete full-system x86 emulator designed fo
 
 Some small C programs to test the implementation of NEMU.
 
-## newlib
+## uClibc
 
-newlib(https://sourceware.org/newlib) is a C library for embedding systems. It requires minimal run-time support and is very friendly to NEMU.
+uClibc(https://www.uclibc.org/) is a C library for embedding systems. It requires much fewer run-time support than glibc and is very friendly to NEMU.
 
 ## kernel
 

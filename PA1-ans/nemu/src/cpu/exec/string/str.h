@@ -1,5 +1,0 @@
-#include "rep.h"
-#include "cld.h"
-#include "cmps.h"
-#include "movs.h"
-#include "stos.h"
