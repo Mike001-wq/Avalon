@@ -10,7 +10,7 @@
 #define TestCorrect(x) if(x){printf("Invalid Command!\n");return 0;}
 void cpu_exec(uint32_t);
 
-void GetFunctionAddr(swaddr_t EIP,char* name);
+void Function_Addr(swaddr_t EIP,char* name,bool* con_or_not);
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
 	static char *line_read = NULL;
@@ -131,24 +131,30 @@ static int cmd_bt(char* args){
 		return 0;
 	}
 	PartOfStackFrame EBP;
-	char name[32];
-	int cnt = 0;
-	EBP.ret_addr = cpu.eip;
+	char* name=NULL;
+	int cnt =0;
+	EBP.ret_addr = cpu.eip;//only once let it be eip
 	swaddr_t addr = cpu.ebp;
 	// printf("%d\n",addr);
 	int i;
-	while (addr){
-		GetFunctionAddr(EBP.ret_addr,name);
+	bool* con_or_not=(bool*)malloc(sizeof(bool));
+	*con_or_not=false;
+	while (1){
+		Function_Addr(EBP.ret_addr,name,con_or_not);
+		if(!(*con_or_not))break;
 		if (name[0] == '\0') break;
-		printf("#%d\t0x%08x\t",cnt++,EBP.ret_addr);
-		printf("%s",name);
+//		printf("#%d\t0x%08x\t",cnt++,EBP.ret_addr);
+//		printf("%s",name);
 		EBP.prev_ebp = swaddr_read(addr,4);
 		EBP.ret_addr = swaddr_read(addr + 4, 4);
+		printf("#%d\t0x%08x\t",cnt++,addr);
+		printf("%s",name);
 		printf("(");
 		for (i = 0;i < 4;i ++){
 			EBP.args[i] = swaddr_read(addr + 8 + i * 4, 4);
 			printf("0x%x",EBP.args[i]);
-			if (i == 3) printf(")\n");else printf(", ");
+			if (i == 3) printf(")\n");
+			else printf(", ");
 		}
 		addr = EBP.prev_ebp;
 	}

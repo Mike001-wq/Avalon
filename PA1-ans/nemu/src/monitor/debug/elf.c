@@ -100,6 +100,7 @@ unsigned Mark_Value(char *str,bool *success){
                 cmp_str[j]=strtab[symtab[i].st_name+j];
   //             printf("111%c%c\n",cmp_str[j],str[j]);
 		 }
+		cmp_str[str_len]='\0';
                 for(j=0;j<str_len;j++){
                 if(cmp_str[j]!=str[j])judge=false;
                 }
@@ -114,16 +115,24 @@ unsigned Mark_Value(char *str,bool *success){
 
 
 
-void GetFunctionAddr(swaddr_t cur_addr,char* name){
+void Function_Addr(swaddr_t curr_addr,char* name,bool* con_or_not){
 	int i;
 	for (i = 0; i < nr_symtab_entry; i++){
-		if ((symtab[i].st_info & 0xf) == STT_FUNC){
+		int trans_info=(int)symtab[i].st_info;
+                trans_info=trans_info&0xf;
+		if (trans_info == STT_FUNC){
 			// printf("0x%08x\n",symtab[i].st_value);
-			if (cur_addr >= symtab[i].st_value && symtab[i].st_value + symtab[i].st_size >= cur_addr){
-				strcpy(name,strtab + symtab[i].st_name);
+			int str_len=strlen(strtab+symtab[i].st_name);
+			name=(char*)malloc(str_len+1);
+			if ((curr_addr >= symtab[i].st_value) && (symtab[i].st_value + symtab[i].st_size >= curr_addr)){
+				int j;
+				for(j=0;j<str_len;j++)name[j]=strtab[symtab[i].st_name+j];
+				name[str_len]='\0';
+				*con_or_not=true;
 				return;
-			}
+			}else *con_or_not=false;
 		}
 	}
-	name[0]='\0';
+//	name[0]='\0';
+	return;
 }
