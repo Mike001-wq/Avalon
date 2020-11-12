@@ -121,9 +121,9 @@ unsigned Mark_Value(char *str,bool *success){
                 }
         }
 	printf("%d%u\n",i,symtab[i].st_value);
-        return 2;
-  //      *success=false;
-//	return 0;
+       if(judge) return symtab[i].st_value;
+       else *success=false;
+	return 0;
 };
 
 
