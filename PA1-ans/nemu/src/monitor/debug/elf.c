@@ -102,7 +102,8 @@ unsigned Mark_Value(char *str,bool *success){
         bool judge=false;
         for(i=0;i<nr_symtab_entry;i++){
                 judge=true;
-		printf("000");
+		int trans_info=(int)symtab[i].st_info;
+		printf("000%d\n",trans_info);
                 if((symtab[i].st_info-0)==STT_OBJECT){
                 int str_len=strlen(str);
                 char* cmp_str=(char*)malloc(str_len+1);
