@@ -144,6 +144,7 @@ static int cmd_bt(char* args){
 		printf("111");
 		Function_Addr(EBP.ret_addr,name,con_or_not);
 		int j;
+		panic("000");
 		for(j=0;j<strlen(name);j++)printf("j %c\t",name[j]);
 		panic("00");
 		if(!(*con_or_not))break;
