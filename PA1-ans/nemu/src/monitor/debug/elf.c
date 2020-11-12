@@ -104,15 +104,15 @@ unsigned Mark_Value(char *str,bool *success){
                 judge=true;
 		int trans_info=(int)symtab[i].st_info;
 		trans_info=trans_info&0xf;
-		printf("000%d\n",trans_info);
+//		printf("000%d\n",trans_info);
                 if(trans_info==STT_OBJECT){
                 int str_len=strlen(str);
                 char* cmp_str=(char*)malloc(str_len+1);
                 int j;
-	printf("222%d\n",str_len);
+//	printf("222%d\n",str_len);
                 for(j=0;j<str_len;j++){
                 cmp_str[j]=strtab[symtab[i].st_name+j];
-               printf("111%c%c\n",cmp_str[j],str[j]);
+  //             printf("111%c%c\n",cmp_str[j],str[j]);
 		 }
                 for(j=0;j<str_len;j++){
                 if(cmp_str[j]!=str[j])judge=false;
@@ -120,7 +120,7 @@ unsigned Mark_Value(char *str,bool *success){
 		 if(judge)break;
                 }
         }
-	printf("%d%u\n",i,symtab[i].st_value);
+//	printf("%d%u\n",i,symtab[i].st_value);
        if(judge) return symtab[i].st_value;
        else *success=false;
 	return 0;
