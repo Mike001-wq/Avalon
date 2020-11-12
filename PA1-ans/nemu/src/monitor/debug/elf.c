@@ -110,7 +110,7 @@ unsigned Mark_Value(char *str,bool *success){
                 cmp_str[j]=*(strtab+symtab[i].st_name+j);
                 }
                 for(j=0;j<str_len;j++){
-                if(cmp_str[j]==str[j])judge=false;
+            //    if(cmp_str[j]==str[j])judge=false;
                 }
                 }
                 if(judge)break;
