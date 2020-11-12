@@ -140,6 +140,7 @@ static int cmd_bt(char* args){
 	bool* con_or_not=(bool*)malloc(sizeof(bool));
 	*con_or_not=false;
 	while (1){
+		printf("111");
 		Function_Addr(EBP.ret_addr,name,con_or_not);
 		if(!(*con_or_not))break;
 		if (name[0] == '\0') break;
