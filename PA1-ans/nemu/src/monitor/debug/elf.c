@@ -80,7 +80,7 @@ void load_elf_tables(int argc, char *argv[]) {
 
 	fclose(fp);
 }
-uint32_t GetMarkValue(char* str,bool* success){
+/*uint32_t GetMarkValue(char* str,bool* success){
 	int i;
 	for (i = 0; i < nr_symtab_entry; i++){
 		if ((symtab[i].st_info & 0xf) == STT_OBJECT){
@@ -96,6 +96,30 @@ uint32_t GetMarkValue(char* str,bool* success){
 	*success = false;
 	return 0;
 }
+*/
+unsigned Mark_Value(char *str,bool *success){
+        int i;
+        bool judge=false;
+        for(i=0;i<nr_symtab_entry;i++){
+                judge=true;
+                if((symtab[i].st_info-0)==STT_OBJECT){
+                unsigned str_len=strlen(str);
+                char* cmp_str=(char*)malloc(str_len+1);
+                int j;
+                for(j=0;j<str_len;j++){
+                cmp_str[j]=*(strtab+symtab[i].st_name+j);
+                }
+                for(j=0;j<str_len;j++){
+                if(cmp_str[j]!=str[j])judge=false;
+                }
+                }
+                if(judge)break;
+        }
+        if(judge)return symtab[i].st_value;
+        else return 0;
+};
+
+
 
 void GetFunctionAddr(swaddr_t cur_addr,char* name){
 	int i;

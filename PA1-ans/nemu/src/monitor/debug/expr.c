@@ -5,7 +5,8 @@
 #include <sys/types.h>
 #include <regex.h>
 #include <elf.h>
-
+#include <stdlib.h>
+//#include "elf.c"
 enum {
 	NOTYPE = 256, EQ, NUMBER, HEXNUMBER, REGISTER, NEQ, AND, OR, NOT, MINUS, POINTER, MARK
 
@@ -41,8 +42,29 @@ static struct rule {
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
 
-uint32_t GetMarkValue(char *str,bool *success);
-
+unsigned Mark_Value(char *str,bool *success);
+/*	{
+	int i;
+	bool judge;
+	for(i=0;i<nr_symtab_entry;i++){
+		judge=true;
+		if((symtab[i].st_info-0)==STT_OBJECT){
+		unsigned str_len=strlen(str);
+		char* cmp_str=(char*)malloc(str_len+1);
+		int j;
+		for(j=0;j<str_len;j++){
+		cmp_str[j]=*(strtab+symtab[i].st_name+j);
+		}
+		for(j=0;j<str_len;j++){
+		if(cmp_str[j]!=str[j])judge=false;
+		}
+		}
+		if(judge)break;
+	}
+	if(judge)return symtab[i].st_value;
+	else return 0;
+};
+*/
 static regex_t re[NR_REGEX];
 
 /* Rules are used for many times.
@@ -233,7 +255,7 @@ uint32_t eval(int l, int r) {
 	if (l == r) {
 		uint32_t num = 0;
 		if (tokens[l].type == MARK){
-			num = GetMarkValue(tokens[l].str, cando);
+			num = Mark_Value(tokens[l].str, cando);
 			if (*cando == false) return 0;
 		} else if (tokens[l].type == NUMBER) {
 			sscanf(tokens[l].str, "%d", &num);
