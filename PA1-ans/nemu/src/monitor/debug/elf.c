@@ -116,7 +116,8 @@ unsigned Mark_Value(char *str,bool *success){
                 if(judge)break;
         }
         if(judge)return symtab[i].st_value;
-        else return 1;
+        else *success=false;
+	return 1;
 };
 
 
