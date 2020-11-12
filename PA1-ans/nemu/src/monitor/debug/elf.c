@@ -126,7 +126,7 @@ void Function_Addr(swaddr_t curr_addr,char* name,bool* con_or_not){
 			if ((curr_addr >= symtab[i].st_value) && (symtab[i].st_value + symtab[i].st_size >= curr_addr)){
 				int j;
 				name=(char*)malloc(str_len+1);
-				for(j=0;j<str_len;j++)name[j]=strtab[symtab[i].st_name+j];
+				for(j=0;j<str_len;j++)strcpy(name,strtab+symtab[i].st_name);
 				printf("666 %d %c %c\n",str_len,name[j],strtab[symtab[i].st_name+j]);
 				name[str_len]='\0';
 				*con_or_not=true;
