@@ -143,6 +143,7 @@ static int cmd_bt(char* args){
 		printf("111");
 		Function_Addr(EBP.ret_addr,name,con_or_not);
 		if(!(*con_or_not))break;
+		if(*con_or_not)printf("222");
 		if (name[0] == '\0') break;
 //		printf("#%d\t0x%08x\t",cnt++,EBP.ret_addr);
 //		printf("%s",name);
