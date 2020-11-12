@@ -108,9 +108,10 @@ unsigned Mark_Value(char *str,bool *success){
                 int j;
                 for(j=0;j<str_len;j++){
                 cmp_str[j]=strtab[symtab[i].st_name+j];
-                }
+               printf("111%c%c\n",cmp_str[j],str[j]);
+		 }
                 for(j=0;j<str_len;j++){
-                if(cmp_str[j]==str[j])judge=false;
+                if(cmp_str[j]!=str[j])judge=false;
                 }
                 }
                 if(judge)break;
