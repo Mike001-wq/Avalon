@@ -117,8 +117,8 @@ unsigned Mark_Value(char *str,bool *success){
                 for(j=0;j<str_len;j++){
                 if(cmp_str[j]!=str[j])judge=false;
                 }
+		 if(judge)break;
                 }
-                if(judge)break;
         }
 	printf("%d%u\n",i,symtab[i].st_value);
         return 2;
