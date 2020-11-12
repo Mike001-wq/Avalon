@@ -146,7 +146,7 @@ static int cmd_bt(char* args){
 	//	int j;
 //		panic("000");
 	//	for(j=0;j<strlen(name);j++)printf("j %s\n",name);
-		panic("00");
+	//	panic("00");
 		if(!(*con_or_not))break;
 		if(*con_or_not)printf("222");
 		if (name[0] == '\0') break;
