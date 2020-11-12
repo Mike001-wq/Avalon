@@ -123,9 +123,9 @@ void Function_Addr(swaddr_t curr_addr,char* name,bool* con_or_not){
 		if (trans_info == STT_FUNC){
 			// printf("0x%08x\n",symtab[i].st_value);
 			int str_len=strlen(strtab+symtab[i].st_name);
-			name=(char*)malloc(str_len+1);
 			if ((curr_addr >= symtab[i].st_value) && (symtab[i].st_value + symtab[i].st_size >= curr_addr)){
 				int j;
+				name=(char*)malloc(str_len+1);
 				for(j=0;j<str_len;j++)name[j]=strtab[symtab[i].st_name+j];
 				printf("666 %d %c\n",str_len,name[j]);
 				name[str_len]='\0';
