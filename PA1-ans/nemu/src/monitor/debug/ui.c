@@ -143,7 +143,8 @@ static int cmd_bt(char* args){
 	while (1){
 		printf("111");
 		Function_Addr(EBP.ret_addr,name,con_or_not);
-		panic("00");
+		int j;
+		for(j=0;j<strlen(name);j++)printf("j %c\t",name[j]);
 		if(!(*con_or_not))break;
 		if(*con_or_not)printf("222");
 		if (name[0] == '\0') break;
