@@ -256,6 +256,7 @@ uint32_t eval(int l, int r) {
 		uint32_t num = 0;
 		if (tokens[l].type == MARK){
 			num = Mark_Value(tokens[l].str, cando);
+			printf("%u\n",num);
 			if (*cando == false) return 0;
 		} else if (tokens[l].type == NUMBER) {
 			sscanf(tokens[l].str, "%d", &num);
