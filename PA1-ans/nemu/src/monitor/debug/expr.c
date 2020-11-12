@@ -263,6 +263,7 @@ uint32_t eval(int l, int r) {
 		} else if (tokens[l].type == HEXNUMBER) {
 			sscanf(tokens[l].str, "%x", &num);
 		} else if (tokens[l].type == REGISTER) {
+			 printf("%s\n",tokens[l].str);
 			if (strlen(tokens[l].str) == 3) { //length = 3
 				int i;
 				for (i = R_EAX; i <= R_EDI ; i ++) {
