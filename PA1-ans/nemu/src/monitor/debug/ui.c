@@ -139,10 +139,11 @@ static int cmd_bt(char* args){
 	int i;
 	bool* con_or_not=(bool*)malloc(sizeof(bool));
 	*con_or_not=false;
-	panic("00");
+//	panic("00");
 	while (1){
 		printf("111");
 		Function_Addr(EBP.ret_addr,name,con_or_not);
+		panic("00");
 		if(!(*con_or_not))break;
 		if(*con_or_not)printf("222");
 		if (name[0] == '\0') break;
