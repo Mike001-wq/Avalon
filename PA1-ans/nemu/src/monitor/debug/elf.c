@@ -103,6 +103,7 @@ unsigned Mark_Value(char *str,bool *success){
         for(i=0;i<nr_symtab_entry;i++){
                 judge=true;
 		int trans_info=(int)symtab[i].st_info;
+		trans_info=trans_info&0xf;
 		printf("000%d\n",trans_info);
                 if((symtab[i].st_info-0)==STT_OBJECT){
                 int str_len=strlen(str);
@@ -117,7 +118,7 @@ unsigned Mark_Value(char *str,bool *success){
                 if(cmp_str[j]!=str[j])judge=false;
                 }
                 }
-           //     if(judge)break;
+                if(judge)break;
         }
 	printf("%d%u\n",i,symtab[i].st_value);
         return 2;
