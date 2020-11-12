@@ -107,7 +107,7 @@ unsigned Mark_Value(char *str,bool *success){
                 char* cmp_str=(char*)malloc(str_len+1);
                 int j;
                 for(j=0;j<str_len;j++){
-                cmp_str[j]=*(strtab+symtab[i].st_name+j);
+                cmp_str[j]=strtab[symtab[i].st_name+j];
                 }
                 for(j=0;j<str_len;j++){
             //    if(cmp_str[j]==str[j])judge=false;
