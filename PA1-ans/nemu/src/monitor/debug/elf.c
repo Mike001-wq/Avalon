@@ -103,21 +103,21 @@ unsigned Mark_Value(char *str,bool *success){
         for(i=0;i<nr_symtab_entry;i++){
                 judge=true;
                 if((symtab[i].st_info-0)==STT_OBJECT){
-                unsigned str_len=strlen(str);
+                int str_len=strlen(str);
                 char* cmp_str=(char*)malloc(str_len+1);
                 int j;
                 for(j=0;j<str_len;j++){
                 cmp_str[j]=strtab[symtab[i].st_name+j];
                 }
                 for(j=0;j<str_len;j++){
-            //    if(cmp_str[j]==str[j])judge=false;
+                if(cmp_str[j]==str[j])judge=false;
                 }
                 }
                 if(judge)break;
         }
-        if(judge)return symtab[i].st_value;
-        else *success=false;
-	return 1;
+        return symtab[i].st_value;
+        *success=false;
+	return 0;
 };
 
 
