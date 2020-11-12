@@ -128,8 +128,9 @@ void Function_Addr(swaddr_t curr_addr,char* name,bool* con_or_not){
 				name=(char*)malloc(str_len+1);
 //				for(j=0;j<str_len;j++)
 				strcpy(name,strtab+symtab[i].st_name);
-				printf("666 %d %s \n",str_len,name);
 				name[str_len]='\0';
+				printf("666 %d %s \n",str_len,name);
+//				name[str_len]='\0';
 				*con_or_not=true;
 				return;
 			}else *con_or_not=false;
