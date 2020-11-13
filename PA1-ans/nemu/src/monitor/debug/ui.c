@@ -135,7 +135,6 @@ static int cmd_bt(char* args){
 	char name[50];
 	EBP.ret_addr = cpu.eip;//only once let it be eip
 	swaddr_t addr = cpu.ebp;
-	// printf("%d\n",addr);
 	int i;
 	uint32_t func_begin;
 	bool* con_or_not=(bool*)malloc(sizeof(bool));
@@ -143,7 +142,6 @@ static int cmd_bt(char* args){
 	while (1){
 		func_begin=Function_Addr(EBP.ret_addr,name,con_or_not);
 		if(!(*con_or_not))break;
-		if(*con_or_not)printf("222");
 		printf("#%d\t0x%08x\t",cnt++,func_begin);
 		EBP.prev_ebp = swaddr_read(addr,4);
 		EBP.ret_addr = swaddr_read(addr + 4, 4);

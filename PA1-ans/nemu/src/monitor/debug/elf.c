@@ -121,21 +121,15 @@ uint32_t Function_Addr(swaddr_t curr_addr,char* name,bool* con_or_not){
 		int trans_info=(int)symtab[i].st_info;
                 trans_info=trans_info&0xf;
 		if (trans_info == STT_FUNC){
-			// printf("0x%08x\n",symtab[i].st_value);
 			int str_len=strlen(strtab+symtab[i].st_name);
-			if ((curr_addr >= symtab[i].st_value) && (symtab[i].st_value + symtab[i].st_size >= curr_addr)){
+			if ((curr_addr >= symtab[i].st_value) && (symtab[i].st_value + symtab[i].st_size > curr_addr)){
 				int j;
-	//			name=(char*)malloc(str_len+1);
 				for(j=0;j<str_len;j++) name[j]=strtab[symtab[i].st_name+j];
-	//			strcpy(name,strtab+symtab[i].st_name);
 				name[str_len]='\0';
-				printf("666 %d %s \n",str_len,name);
-//				name[str_len]='\0';
 				*con_or_not=true;
 				return symtab[i].st_value;
 			}else *con_or_not=false;
 		}
 	}
-//	name[0]='\0';
 	return 0;
 }
