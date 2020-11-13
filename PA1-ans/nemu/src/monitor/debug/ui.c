@@ -137,17 +137,14 @@ static int cmd_bt(char* args){
 	swaddr_t addr = cpu.ebp;
 	// printf("%d\n",addr);
 	int i;
+	uint32_t func_begin;
 	bool* con_or_not=(bool*)malloc(sizeof(bool));
 	*con_or_not=false;
 	while (1){
-		printf("111");
-		addr=Function_Addr(EBP.ret_addr,name,con_or_not);
+		func_begin=Function_Addr(EBP.ret_addr,name,con_or_not);
 		if(!(*con_or_not))break;
-		printf("0\n");
 		if(*con_or_not)printf("222");
-		printf("00\n");
-		printf("000\n");
-		printf("#%d\t0x%08x\t",cnt++,addr);
+		printf("#%d\t0x%08x\t",cnt++,func_begin);
 		EBP.prev_ebp = swaddr_read(addr,4);
 		EBP.ret_addr = swaddr_read(addr + 4, 4);
 		printf("%s",name);
