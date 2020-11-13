@@ -29,7 +29,7 @@ uint32_t loader() {
 #endif
 
 	elf = (void*)buf;
-
+	ph = (void*)(buf + elf -> e_phoff);
 	/* TODO: fix the magic number with the correct one */
 	const uint32_t elf_magic = 0x464c457f;
 	uint32_t *p_magic = (void *)buf;
@@ -38,7 +38,7 @@ uint32_t loader() {
 	/* Load each program segment */
 	// panic("please implement me");
 	int i;
-	ph = (void*)(buf + elf -> e_phoff);//initialize ph,similar to elf's
+//	ph = (void*)(buf + elf -> e_phoff);//initialize ph,similar to elf's
 	for(i = 0; i < elf -> e_phnum; i ++) {
 		/* Scan the program header table, load each segment into memory */
 		if(ph->p_type == PT_LOAD) {
@@ -53,7 +53,7 @@ uint32_t loader() {
 			 */
 			memset((void*)(ph -> p_vaddr + ph -> p_filesz),0,ph -> p_memsz - ph -> p_filesz);
 
-			ph ++;
+			ph =ph+1;
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */
