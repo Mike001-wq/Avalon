@@ -115,7 +115,7 @@ unsigned Mark_Value(char *str,bool *success){
 
 
 
-void Function_Addr(swaddr_t curr_addr,char* name,bool* con_or_not){
+uint32_t Function_Addr(swaddr_t curr_addr,char* name,bool* con_or_not){
 	int i;
 	for (i = 0; i < nr_symtab_entry; i++){
 		int trans_info=(int)symtab[i].st_info;
@@ -132,10 +132,10 @@ void Function_Addr(swaddr_t curr_addr,char* name,bool* con_or_not){
 				printf("666 %d %s \n",str_len,name);
 //				name[str_len]='\0';
 				*con_or_not=true;
-				return;
+				return symtab[i].st_value;
 			}else *con_or_not=false;
 		}
 	}
 //	name[0]='\0';
-	return;
+	return 0;
 }

@@ -10,7 +10,7 @@
 #define TestCorrect(x) if(x){printf("Invalid Command!\n");return 0;}
 void cpu_exec(uint32_t);
 
-void Function_Addr(swaddr_t EIP,char* name,bool* con_or_not);
+uint32_t Function_Addr(swaddr_t EIP,char* name,bool* con_or_not);
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
 	static char *line_read = NULL;
@@ -141,7 +141,7 @@ static int cmd_bt(char* args){
 	*con_or_not=false;
 	while (1){
 		printf("111");
-		Function_Addr(EBP.ret_addr,name,con_or_not);
+		addr=Function_Addr(EBP.ret_addr,name,con_or_not);
 		if(!(*con_or_not))break;
 		printf("0\n");
 		if(*con_or_not)printf("222");
