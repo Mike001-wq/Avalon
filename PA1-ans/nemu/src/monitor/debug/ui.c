@@ -151,7 +151,7 @@ static int cmd_bt(char* args){
 		printf("0\n");
 		if(*con_or_not)printf("222");
 		printf("00\n");
-		if (name[0] == '\0') printf("name[0]=0\n");
+		if (!name[0]) printf("name[0]=0\n");
 //		printf("#%d\t0x%08x\t",cnt++,EBP.ret_addr);
 //		printf("%s",name);
 		printf("000\n");
