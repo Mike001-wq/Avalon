@@ -131,7 +131,6 @@ static int cmd_bt(char* args){
 		return 0;
 	}
 	PartOfStackFrame EBP;
-	char* name=NULL;
 	int cnt =0;
 	EBP.ret_addr = cpu.eip;//only once let it be eip
 	swaddr_t addr = cpu.ebp;
@@ -142,6 +141,7 @@ static int cmd_bt(char* args){
 //	panic("00");
 	while (1){
 		printf("111");
+		char* name=NULL;
 		Function_Addr(EBP.ret_addr,name,con_or_not);
 	//	int j;
 //		panic("000");
