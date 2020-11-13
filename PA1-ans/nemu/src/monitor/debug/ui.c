@@ -155,6 +155,7 @@ static int cmd_bt(char* args){
 		}
 		addr = EBP.prev_ebp;
 	}
+	free(con_or_not);
 	return 0;
 }
 
