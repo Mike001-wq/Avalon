@@ -164,6 +164,7 @@ static int cmd_bt(char* args){
 			else printf(", ");
 		}
 		addr = EBP.prev_ebp;
+		free(name);
 	}
 	return 0;
 }
