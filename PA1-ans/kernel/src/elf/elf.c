@@ -38,7 +38,7 @@ uint32_t loader() {
 	/* Load each program segment */
 	// panic("please implement me");
 	int i;
-	ph = (void*)(buf + elf -> e_phoff);
+//	ph = (void*)(buf + elf -> e_phoff);//initialize ph,similar to elf's
 	for(i = 0; i < elf -> e_phnum; i ++) {
 		/* Scan the program header table, load each segment into memory */
 		if(ph->p_type == PT_LOAD) {
@@ -46,12 +46,12 @@ uint32_t loader() {
 			/* TODO: read the content of the segment from the ELF file 
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
-			ramdisk_read((void*)(ph -> p_vaddr),ph -> p_offset,ph -> p_filesz);
+			ramdisk_read((uint8_t*)(ph -> p_vaddr),ph -> p_offset,ph -> p_filesz);
 			 
 			/* TODO: zero the memory region 
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
-			memset((void*)(ph -> p_vaddr + ph -> p_filesz),0,ph -> p_memsz - ph -> p_filesz);
+			memset((uint8_t*)(ph -> p_vaddr + ph -> p_filesz),0,ph -> p_memsz - ph -> p_filesz);
 
 			ph ++;
 
