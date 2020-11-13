@@ -155,9 +155,10 @@ static int cmd_bt(char* args){
 //		printf("#%d\t0x%08x\t",cnt++,EBP.ret_addr);
 //		printf("%s",name);
 		printf("000\n");
+		printf("#%d\t0x%08x\t",cnt++,addr);
 		EBP.prev_ebp = swaddr_read(addr,4);
 		EBP.ret_addr = swaddr_read(addr + 4, 4);
-		printf("#%d\t0x%08x\t",cnt++,addr);
+		//printf("#%d\t0x%08x\t",cnt++,addr);
 		printf("%s",name);
 		printf("(");
 		for (i = 0;i < 4;i ++){
