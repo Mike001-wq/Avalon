@@ -148,10 +148,13 @@ static int cmd_bt(char* args){
 	//	for(j=0;j<strlen(name);j++)printf("j %s\n",name);
 	//	panic("00");
 		if(!(*con_or_not))break;
+		printf("0\n");
 		if(*con_or_not)printf("222");
+		printf("00\n");
 		if (name[0] == '\0') break;
 //		printf("#%d\t0x%08x\t",cnt++,EBP.ret_addr);
 //		printf("%s",name);
+		printf("000\n");
 		EBP.prev_ebp = swaddr_read(addr,4);
 		EBP.ret_addr = swaddr_read(addr + 4, 4);
 		printf("#%d\t0x%08x\t",cnt++,addr);
