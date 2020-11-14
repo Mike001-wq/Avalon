@@ -18,29 +18,26 @@ __attribute__((used)) static int format_FLOAT(FILE *stream, FLOAT f) {
 	 */
 
 	char buf[80];
-	int op = (f >> 31) & 0x1;
-	if (op) f = (~f) + 1;
+	int f_sign = (f >> 31) & 0x1;
+	if (f_sign) f = (~f) + 1;
 
 
 	int frac = 0;
 	int i;
-	int base=100000000;//Accuracy
+	int frac_acc=100000000;//bigger then more accurate, but must be pow(10,n),n is an integer
 	for (i = 15; i >= 0;i--){
-		base >>= 1;
+		frac_acc=frac_acc/2;
 		if (f&(1<<i)){
-			frac += base;
+			frac+=frac_acc;
 		}
 	}
-	int num = f >> 16;
+	int inte =f>>16;
 	int len = 0;
-	while (frac > 999999) frac /= 10;
-	if (op){
-		len = sprintf(buf,"-%d.%06d",num,frac);
-	}else {
-		len = sprintf(buf,"%d.%06d",num,frac);
-	}
+	while (frac>999999) frac /= 10;
+	if (f_sign) len = sprintf(buf,"-%d.%06d",inte,frac);
+	else len = sprintf(buf,"%d.%06d",inte,frac);
+	
 
-	//int len = sprintf(buf, "0x%08x", f);
 	return __stdio_fwrite(buf, len, stream);
 }
 
@@ -52,33 +49,31 @@ static void modify_vfprintf() {
 	 */
 	int addr = (int)(&_vfprintf_internal);
 
-	// mprotect((void*)((addr + 0x306 - 100) & 0xfffff000), 4096*2, PROT_READ|PROT_WRITE|PROT_EXEC);
+	 mprotect((void*)((addr + 0x306 - 100) & 0xfffff000), 4096*2, PROT_READ|PROT_WRITE|PROT_EXEC);
 
-	//fstpt -> push
-	char *hijack = (char*)(addr + 0x306 - 0xa);
-	*hijack = 0xff;//push m32
-	hijack = (char*)(addr + 0x306 - 0x9);
-	*hijack = 0x32;//ModR/M: 00 110 010
-	hijack = (char*)(addr + 0x306 - 0x8);
-	*hijack = 0x90;//nop
+	int* call_destination = (int*)(addr + 0x307);
+	*call_destination += (int)(&format_FLOAT)-(int)(&_fpmaxtostr);
+	void* call_position=(void*)(addr+0x306);
+	char *hijack = (char*)(call_position - 0xa);
+	*hijack = 0xff;//modify its instruction
+	hijack = (char*)(call_position - 0x9);
+	*hijack = 0x32;//set byte ModR/M
+	hijack = (char*)(call_position - 0x8);
+	*hijack = 0x90;//set rest one byte to nop
 
-	hijack = (char*)(addr + 0x306 - 0xb);
-	*hijack = 0x08;//sub 0x8,%esp
+	hijack = (char*)(call_position - 0xb);
+	*hijack = 0x08;
 
-	hijack = (char*)(addr + 0x306 - 0x22);
-	*hijack = 0x90;//fldt -> nop
+	hijack = (char*)(call_position - 0x22);
+	*hijack = 0x90;
+	hijack = (char*)(call_position - 0x1d);
+	*hijack = 0x90;
+	hijack = (char*)(call_position - 0x21);
+	*hijack = 0x90;
+	hijack = (char*)(call_position - 0x1e);
+	*hijack = 0x90;
 
-	hijack = (char*)(addr + 0x306 - 0x21);
-	*hijack = 0x90;//fldt -> nop
 
-	hijack = (char*)(addr + 0x306 - 0x1e);
-	*hijack = 0x90;//fldl -> nop
-
-	hijack = (char*)(addr + 0x306 - 0x1d);
-	*hijack = 0x90;//fldl -> nop
-
-	int *pos = (int*)(addr + 0x307);
-	*pos += (int)format_FLOAT-(int)(&_fpmaxtostr);
 #if 0
 	else if (ppfs->conv_num <= CONV_A) {  /* floating point */
 		ssize_t nf;
@@ -125,13 +120,14 @@ static void modify_ppfs_setargs() {
 	 * the modification.
 	 */
 
-	int addr = (int)(&_ppfs_setargs);
-	char *hijack = (char*)(addr + 0x71);
-	*hijack = 0xeb;
-	hijack = (char*)(addr + 0x72);
-	*hijack = 0x30;
-	hijack = (char*)(addr + 0x73);
-	*hijack = 0x90;
+	int begin_addr = (int)(&_ppfs_setargs);
+	char* attack;
+	attack = (char*)(begin_addr + 0x71);
+	*attack = 0xeb;
+	attack = (char*)(begin_addr + 0x72);
+	*attack = 0x30;
+	attack = (char*)(begin_addr + 0x73);
+	*attack = 0x90;
 
 #if 0
 	enum {                          /* C type: */
