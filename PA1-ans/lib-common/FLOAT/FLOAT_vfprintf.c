@@ -49,7 +49,7 @@ static void modify_vfprintf() {
 	 */
 	int addr = (int)(&_vfprintf_internal);
 
-	 mprotect((void*)((addr + 0x306 - 100) & 0xfffff000), 4096*2, PROT_READ|PROT_WRITE|PROT_EXEC);
+//	 mprotect((void*)((addr + 0x306 - 100) & 0xfffff000), 4096*2, PROT_READ|PROT_WRITE|PROT_EXEC);
 
 	int* call_destination = (int*)(addr + 0x307);
 	*call_destination += (int)(&format_FLOAT)-(int)(&_fpmaxtostr);
